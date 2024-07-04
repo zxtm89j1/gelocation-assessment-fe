@@ -163,7 +163,7 @@ const home = () => {
       )}
 
       {history.length > 0 ? (
-        <View>
+        <View style={{ borderColor: "blue", borderWidth: 1 }}>
           <FlatList
             data={history}
             keyExtractor={(item, index) => index.toString()}
