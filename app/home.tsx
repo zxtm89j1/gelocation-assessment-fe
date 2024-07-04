@@ -55,11 +55,6 @@ const home = () => {
     getIp();
   }, []);
 
-  // useEffect(() => {
-  //   console.log("HISTORY CHANGED");
-  //   console.log(history);
-  // }, [history]);
-
   const getGeoDetails = async () => {
     try {
       const result = await axios.get(
@@ -102,22 +97,10 @@ const home = () => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log(
-  //     "-----------------------------------------------------------------------------------------------------------"
-  //   );
-  //   console.log(history);
-  // }, [history]);
-
-  useEffect(() => {
-    getGeoDetails();
-  }, [searching, ipAddress]);
-
   const getHistory = async () => {
     try {
       const result = await AsyncStorage.getItem("history");
-      console.log("MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOO");
-      console.log(result);
+
       return result;
     } catch (error) {
       console.log(error);
@@ -171,6 +154,7 @@ const home = () => {
               <Pressable
                 onPress={() => {
                   setIpAddress(item.ip);
+                  console.log(getGeoDetails());
                 }}
               >
                 <View style={styles.historyItem}>
