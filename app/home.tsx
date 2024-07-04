@@ -127,22 +127,6 @@ const home = () => {
           <Text style={styles.text}>{geoDetails.postal}</Text>
         </View>
       )}
-
-      {/* <FlatList /> */}
-      <Button title="LOG OUT" onPress={() => logout()} />
-      <Button
-        title="check ip"
-        onPress={() => {
-          console.warn(ipAddress);
-        }}
-      />
-      <Button
-        title="Check geo details"
-        onPress={() => {
-          console.log(geoDetails);
-        }}
-      />
-      <Button title="GET THE ITEM" onPress={() => getHistory()} />
     </SafeAreaView>
   );
 };
