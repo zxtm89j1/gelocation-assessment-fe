@@ -103,7 +103,7 @@ const home = () => {
 
   useEffect(() => {
     getGeoDetails();
-  }, [searching]);
+  }, [searching, ipAddress]);
 
   const getHistory = async () => {
     try {
@@ -160,9 +160,8 @@ const home = () => {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <Pressable
-                onPress={async () => {
+                onPress={() => {
                   setIpAddress(item.ip);
-                  await getGeoDetails();
                 }}
               >
                 <View>
