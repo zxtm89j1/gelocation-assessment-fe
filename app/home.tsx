@@ -25,7 +25,7 @@ const home = () => {
 
   const [loggedUserIp, setLoggedUserIp] = useState<any>();
 
-  const [history, setHistory] = useState<any>();
+  const [history, setHistory] = useState<any>([]);
 
   //checks if there's already a user that logged in
   useEffect(() => {
@@ -55,10 +55,10 @@ const home = () => {
     getIp();
   }, []);
 
-  useEffect(() => {
-    console.log("HISTORY CHANGED");
-    console.log(history);
-  }, [history]);
+  // useEffect(() => {
+  //   console.log("HISTORY CHANGED");
+  //   console.log(history);
+  // }, [history]);
 
   const getGeoDetails = async () => {
     try {
@@ -93,6 +93,7 @@ const home = () => {
 
         await AsyncStorage.setItem("history", JSON.stringify(historyArray));
         setHistory(historyArray);
+        console.log("SETTING HISTORY");
       }
     } catch (error) {
       console.log(error);
@@ -101,6 +102,13 @@ const home = () => {
     }
   };
 
+  // useEffect(() => {
+  //   console.log(
+  //     "-----------------------------------------------------------------------------------------------------------"
+  //   );
+  //   console.log(history);
+  // }, [history]);
+
   useEffect(() => {
     getGeoDetails();
   }, [searching, ipAddress]);
@@ -108,6 +116,7 @@ const home = () => {
   const getHistory = async () => {
     try {
       const result = await AsyncStorage.getItem("history");
+      console.log("MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOO");
       console.log(result);
       return result;
     } catch (error) {
@@ -153,8 +162,8 @@ const home = () => {
         </View>
       )}
 
-      {history ? (
-        <View style={{ height: 1 }}>
+      {history.length > 0 ? (
+        <View>
           <FlatList
             data={history}
             keyExtractor={(item, index) => index.toString()}
@@ -164,7 +173,7 @@ const home = () => {
                   setIpAddress(item.ip);
                 }}
               >
-                <View>
+                <View style={styles.historyItem}>
                   <Text>IP: {item.ip}</Text>
                   <Text>City: {item.city}</Text>
                   <Text>Country: {item.country}</Text>
@@ -209,5 +218,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
+  },
+  historyItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
 });
