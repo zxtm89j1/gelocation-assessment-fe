@@ -1,11 +1,20 @@
-import { View, Text, Button, TextInput, Alert, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  Alert,
+  StyleSheet,
+  FlatList,
+  Pressable,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import * as Network from "expo-network";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
-import { FlatList } from "react-native-gesture-handler";
+// import { FlatList } from "react-native-gesture-handler";
 
 const home = () => {
   const [ipAddress, setIpAddress] = useState<string | null | undefined>(null);
@@ -46,32 +55,50 @@ const home = () => {
     getIp();
   }, []);
 
+  useEffect(() => {
+    console.log("HISTORY CHANGED");
+    console.log(history);
+  }, [history]);
+
   const getGeoDetails = async () => {
     try {
       const result = await axios.get(
         `http://ipinfo.io/${ipAddress}?token=44e7e7c5560411`
       );
 
-      console.log("GEO DETAILS RESULT");
-      console.log(result);
-
       setGeoDetails(result.data);
 
       const historyResult = await getHistory();
 
-      //retrieve history
-      if (!historyResult && ipAddress != loggedUserIp) {
+      // Retrieve history
+      if (!historyResult && ipAddress !== loggedUserIp) {
         await AsyncStorage.setItem("history", JSON.stringify([result.data]));
+        setHistory([result.data]);
       } else {
-        const historyArray = await AsyncStorage.getItem("history");
-        console.log("HISTORY ARRAY");
-        console.log(historyArray);
-        // historyArray?.push(result.data);
-        // await AsyncStorage.setItem("history", JSON.stringify([result.data]));
+        const historyString = await AsyncStorage.getItem("history");
+        let historyArray = historyString ? JSON.parse(historyString) : [];
+
+        if (!Array.isArray(historyArray)) {
+          historyArray = [];
+        }
+
+        const foundIp = historyArray.find(
+          (item: any) => item.ip == result.data.ip
+        );
+
+        //check if the ip address is already in the history
+        if (!foundIp) {
+          historyArray.push(result.data);
+        } else {
+          return;
+        }
+
+        await AsyncStorage.setItem("history", JSON.stringify(historyArray));
+        setHistory(historyArray);
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Error", "Invalid Ip");
+      Alert.alert("Error", "Invalid IP");
       setIpAddress(loggedUserIp);
     }
   };
@@ -127,6 +154,32 @@ const home = () => {
           <Text style={styles.text}>{geoDetails.postal}</Text>
         </View>
       )}
+
+      {history ? (
+        <View>
+          <FlatList
+            data={history}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => {
+                  setIpAddress(item.ip);
+                }}
+              >
+                <View>
+                  <Text>IP: {item.ip}</Text>
+                  <Text>City: {item.city}</Text>
+                  <Text>Country: {item.country}</Text>
+                </View>
+              </Pressable>
+            )}
+          />
+        </View>
+      ) : (
+        <Text>No history available</Text>
+      )}
+
+      <Button title="LOG OUT" onPress={() => logout()} />
     </SafeAreaView>
   );
 };
