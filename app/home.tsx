@@ -89,8 +89,6 @@ const home = () => {
         //check if the ip address is already in the history
         if (!foundIp) {
           historyArray.push(result.data);
-        } else {
-          return;
         }
 
         await AsyncStorage.setItem("history", JSON.stringify(historyArray));
@@ -105,7 +103,7 @@ const home = () => {
 
   useEffect(() => {
     getGeoDetails();
-  }, [searching]);
+  }, [searching, ipAddress]);
 
   const getHistory = async () => {
     try {
