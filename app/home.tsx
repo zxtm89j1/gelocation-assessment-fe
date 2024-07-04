@@ -55,6 +55,12 @@ const home = () => {
     getIp();
   }, []);
 
+  useEffect(() => {
+    if (ipAddress) {
+      getGeoDetails();
+    }
+  }, [ipAddress]);
+
   const getGeoDetails = async () => {
     try {
       const result = await axios.get(
@@ -119,7 +125,7 @@ const home = () => {
         placeholder="Search for an ip Address"
         onChangeText={(text: string) => {
           setSearching(false);
-          getIp(text);
+          setIpAddress(text);
         }}
         keyboardType="numeric"
         style={styles.textInput}
@@ -127,7 +133,6 @@ const home = () => {
       <Text
         onPress={async () => {
           setSearching(true);
-          await getGeoDetails();
         }}
       >
         Search
@@ -154,7 +159,6 @@ const home = () => {
               <Pressable
                 onPress={() => {
                   setIpAddress(item.ip);
-                  console.log(getGeoDetails());
                 }}
               >
                 <View style={styles.historyItem}>
