@@ -27,6 +27,8 @@ const home = () => {
 
   const [history, setHistory] = useState<any>([]);
 
+  const [newIp, setNewIp] = useState<any>();
+
   //checks if there's already a user that logged in
   useEffect(() => {
     const getKey = async () => {
@@ -60,7 +62,6 @@ const home = () => {
       getGeoDetails();
     }
   }, [ipAddress]);
-
   const getGeoDetails = async () => {
     try {
       const result = await axios.get(
@@ -125,7 +126,8 @@ const home = () => {
         placeholder="Search for an ip Address"
         onChangeText={(text: string) => {
           setSearching(false);
-          setIpAddress(text);
+          // setIpAddress(text);
+          setNewIp(text);
         }}
         keyboardType="numeric"
         style={styles.textInput}
@@ -133,6 +135,7 @@ const home = () => {
       <Text
         onPress={async () => {
           setSearching(true);
+          setIpAddress(newIp);
         }}
       >
         Search
