@@ -103,7 +103,7 @@ const home = () => {
 
   useEffect(() => {
     getGeoDetails();
-  }, [searching, ipAddress]);
+  }, [searching]);
 
   const getHistory = async () => {
     try {
@@ -133,9 +133,9 @@ const home = () => {
         style={styles.textInput}
       />
       <Text
-        onPress={() => {
+        onPress={async () => {
           setSearching(true);
-          getGeoDetails();
+          await getGeoDetails();
         }}
       >
         Search
@@ -154,14 +154,15 @@ const home = () => {
       )}
 
       {history ? (
-        <View>
+        <View style={{ height: 1 }}>
           <FlatList
             data={history}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <Pressable
-                onPress={() => {
+                onPress={async () => {
                   setIpAddress(item.ip);
+                  await getGeoDetails();
                 }}
               >
                 <View>
